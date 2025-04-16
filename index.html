@@ -8,11 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
     <style>
         :root {
-            --light-square-color: #f0d9b5;
-            --dark-square-color: #b58863;
+            --light-square-color: #f0d9b5;  /* Lighter wood color */
+            --dark-square-color: #b58863;   /* Darker wood color */
             --selected-color: rgba(255, 255, 0, 0.5);
             --possible-move-color: rgba(0, 255, 0, 0.4);
-            --light-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23000000' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+            --light-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23000000' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E"); /* Subtle texture */
             --dark-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cg fill='%23000000' fill-opacity='0.2'%3E%3Cpath d='M0 0h4v4H0V0zm4 4h4v4H4V4z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
         }
 
@@ -25,15 +25,13 @@
             background-color: #f0f0f0;
             font-family: 'Press Start 2P', cursive;
             margin: 0;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #2c3e50, #34495e); /* Darker, more sophisticated gradient */
         }
-
-        #board-container {
-            perspective: 800px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            position: relative; /* Needed for absolute positioning of overlay */
-        }
+      #board-container {
+        perspective: 800px; /* Add perspective for 3D effect */
+        margin-bottom: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+      }
 
         #board {
             display: grid;
@@ -41,13 +39,14 @@
             grid-template-rows: repeat(8, 80px);
             border: 4px solid #333;
             background-color: #444;
-            transform: rotateX(30deg);
-            transition: transform 0.5s ease;
-            transform-style: preserve-3d;
+           /* Removed box-shadow from here */
+            transform: rotateX(30deg);  /* 3D rotation */
+            transition: transform 0.5s ease; /* Smooth transition for perspective change on hover */
+            transform-style: preserve-3d; /* Important for 3D transforms */
         }
 
         #board:hover {
-            transform: rotateX(20deg);
+           transform: rotateX(20deg); /* Slightly flatten on hover for interaction feedback */
         }
 
         .square {
@@ -58,24 +57,22 @@
             justify-content: center;
             font-size: 48px;
             cursor: pointer;
-            position: relative;
-            transition: background-color 0.2s, transform 0.2s;
+            position: relative; /* For absolute positioning of the piece */
+            transition: background-color 0.2s, transform 0.2s; /* Smooth transitions */
         }
-
-        .square:hover {
-            transform: scale(1.05);
-            z-index: 1;
-        }
-
+      .square:hover {
+          transform: scale(1.05); /* Slight scale on hover */
+          z-index: 1; /* Bring hovered square to front */
+      }
         .white {
             background-color: var(--light-square-color);
-            background-image: var(--light-texture);
+            background-image: var(--light-texture); /* Apply texture */
             color: #333;
         }
 
         .black {
             background-color: var(--dark-square-color);
-            background-image: var(--dark-texture);
+             background-image: var(--dark-texture);
             color: #eee;
         }
 
@@ -89,26 +86,27 @@
         }
 
         .piece {
-            width: 70px;
+            width: 70px; /* Slightly smaller than the square */
             height: 70px;
-            position: absolute;
+            position: absolute; /* Absolute positioning within the square */
             top: 5px;
             left: 5px;
-            transition: transform 0.3s ease;
-            user-select: none;
-            pointer-events: none;
-            filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease; /* Smooth transition for movement */
+            user-select: none; /* Prevent text selection */
+            pointer-events: none; /* Important: clicks go through the piece to the square */
+            filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.5)); /* More subtle shadow */
+
         }
 
-        .game-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-            gap: 20px;
-        }
+      .game-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 20px; /* Space between buttons */
 
-        .control-button {
+      }
+       .control-button {
             padding: 12px 24px;
             font-size: 16px;
             background: linear-gradient(to bottom, #4CAF50, #388E3C);
@@ -120,120 +118,48 @@
             transition: all 0.3s ease;
             font-family: 'Press Start 2P', cursive;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 200px; /* Make buttons wider */
-            justify-content: center; /* Center content horizontally */
+            display: flex; /* Use flexbox for icon alignment */
+            align-items: center; /* Vertically center icon and text */
+            gap: 8px; /* Space between icon and text */
         }
 
-        .control-button:hover {
+      .control-button:hover {
             background: linear-gradient(to bottom, #66BB6A, #43A047);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
             transform: translateY(-2px);
         }
 
+
         #game-status {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            min-width: 250px; /* Increased width */
-            backdrop-filter: blur(4px);
-            position: relative; /* To position the spinner */
+          font-size: 18px;
+          margin-bottom: 20px;
+          color: white;
+          padding: 10px;
+          border-radius: 8px;
+          background-color: rgba(0, 0, 0, 0.5);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          text-align: center;
+          min-width: 200px;
+          backdrop-filter: blur(4px);
         }
+      .winning-message {
+        animation: pulse 2s infinite;
+        color: limegreen;
+      }
+      .draw-message {
+        color: yellow;
+        animation: pulse 2s infinite;
+      }
 
-        .winning-message {
-            animation: pulse 2s infinite;
-            color: limegreen;
-        }
-
-        .draw-message {
-            color: yellow;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+      /* Mute button icons */
         .icon {
-            width: 24px;
+            width: 24px; /* Icon size */
             height: 24px;
-        }
-
-        /* Styles for the connection overlay */
-        #connection-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            color: white;
-            font-size: 20px;
-            font-family: 'Press Start 2P', cursive;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #fff;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        #game-over-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            color: white;
-            font-size: 24px;
-            font-family: 'Press Start 2P', cursive;
-        }
-
-        #game-over-content {
-            border: 4px solid white;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.5);
         }
 
     </style>
@@ -242,21 +168,11 @@
     <div id="game-status"></div>
     <div id="board-container">
         <div id="board"></div>
-        <div id="connection-overlay">
-            <div class="spinner"></div>
-            <p id="connection-message">Connecting to server...</p>
-        </div>
-        <div id="game-over-overlay" style="display: none;">
-            <div id="game-over-content">
-                <p id="game-over-text">Game Over</p>
-                <button id="new-game-button" class="control-button">New Game</button>
-            </div>
-        </div>
     </div>
 
     <div class="game-controls">
-        <button id="reset-button" class="control-button" disabled>
-            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/rotate-ccw.svg" alt="Reset" class="icon">
+        <button id="reset-button" class="control-button">
+             <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/rotate-ccw.svg" alt="Reset" class="icon">
             Reset
         </button>
         <button id="mute-button" class="control-button">
@@ -271,24 +187,34 @@
         const captureSynth = new Tone.MembraneSynth().toDestination();
         const gameOverSynth = new Tone.FMSynth().toDestination();
 
-        let isMuted = false;
-        let ws;
-        let gameId;
-        let playerColor;
-        let board = [];
-        let currentPlayer;
-        let selectedSquare = null;
-        let gameOver = false;
-        let opponentDisconnected = false; // Track opponent disconnection
+        let isMuted = false; // Mute state
 
-        const connectionOverlay = document.getElementById('connection-overlay');
-        const connectionMessage = document.getElementById('connection-message');
-        const resetButton = document.getElementById('reset-button');
-        const gameOverOverlay = document.getElementById('game-over-overlay');
-        const gameOverText = document.getElementById('game-over-text');
-        const newGameButton = document.getElementById('new-game-button');
+      // Function to play move sound (only if not muted)
+        function playMoveSound() {
+          if (!isMuted) {
+            moveSynth.triggerAttackRelease("C4", "8n");
+          }
+        }
 
-        // Piece image URLs (using Wikimedia Commons SVGs)
+      // Function to play capture sound (only if not muted)
+      function playCaptureSound() {
+          if (!isMuted) {
+              captureSynth.triggerAttackRelease("A2", "8n");
+          }
+      }
+
+      // Function to play game over sound (only if not muted)
+      function playGameOverSound() {
+          if (!isMuted) {
+              const now = Tone.now();
+              gameOverSynth.triggerAttackRelease("C2", "8n", now);
+              gameOverSynth.triggerAttackRelease("E2", "8n", now + 0.2);
+              gameOverSynth.triggerAttackRelease("G2", "8n", now + 0.4);
+              gameOverSynth.triggerAttackRelease("C3", "1n", now + 0.6);
+          }
+      }
+
+        // Piece image URLs (using Wikimedia Commons SVGs for consistent styling)
         const pieceImages = {
             'wR': 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg',
             'wN': 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg',
@@ -304,6 +230,11 @@
             'bP': 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg',
         };
 
+        let board = [];
+        let currentPlayer = 'w';
+        let selectedSquare = null;
+        let gameOver = false;
+
         function initializeBoard() {
             board = [
                 ['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
@@ -317,403 +248,268 @@
             ];
             gameOver = false;
             currentPlayer = 'w';
-            selectedSquare = null;
-            opponentDisconnected = false;
-            gameOverOverlay.style.display = 'none'; // Hide game over overlay
-            resetButton.disabled = false;
+            selectedSquare = null; // Reset selection
         }
 
         function renderBoard() {
-            const boardElement = document.getElementById('board');
-            boardElement.innerHTML = '';
+          const boardElement = document.getElementById('board');
+          boardElement.innerHTML = '';
 
-            for (let row = 0; row < 8; row++) {
-                for (let col = 0; col < 8; col++) {
-                    const piece = board[row][col];
-                    const square = document.createElement('div');
-                    square.classList.add('square');
-                    square.classList.add((row + col) % 2 === 0 ? 'white' : 'black');
+          for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+              const piece = board[row][col];
+              const square = document.createElement('div');
+              square.classList.add('square');
+              square.classList.add((row + col) % 2 === 0 ? 'white' : 'black');
+              // No textContent, we'll use img for pieces
 
-                    if (selectedSquare && selectedSquare.row === row && selectedSquare.col === col) {
-                        square.classList.add('selected');
-                    }
+              if (selectedSquare && selectedSquare.row === row && selectedSquare.col === col) {
+                square.classList.add('selected');
+              }
 
-                    if (selectedSquare && isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
-                        square.classList.add('possible-move');
-                    }
+              if (selectedSquare && isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
+                square.classList.add('possible-move');
+              }
 
-                    if (piece) {
-                        const pieceImg = document.createElement('img');
-                        pieceImg.src = pieceImages[piece];
-                        pieceImg.alt = piece;
-                        pieceImg.classList.add('piece');
-                        pieceImg.dataset.row = row;
-                        pieceImg.dataset.col = col;
-                        square.appendChild(pieceImg);
-                    }
+              // Add piece image if there's a piece
+              if (piece) {
+                const pieceImg = document.createElement('img');
+                pieceImg.src = pieceImages[piece];
+                pieceImg.alt = piece; // For accessibility
+                pieceImg.classList.add('piece');
+                // Set data attributes for row and col, used for animation
+                pieceImg.dataset.row = row;
+                pieceImg.dataset.col = col;
+                square.appendChild(pieceImg);
+              }
 
-                    square.addEventListener('click', () => handleSquareClick(row, col));
-                    boardElement.appendChild(square);
-                }
+              square.addEventListener('click', () => handleSquareClick(row, col));
+              boardElement.appendChild(square);
             }
-            updateGameStatus();
+          }
+          updateGameStatus();
         }
 
-        function handleSquareClick(row, col) {
-            if (gameOver || opponentDisconnected) return;
+      function handleSquareClick(row, col) {
+          if(gameOver) return;
 
-            // Only allow the current player to move their own pieces
-            if (!selectedSquare) {
-                if (board[row][col] && board[row][col][0] === playerColor) {
-                    selectedSquare = { row, col };
-                }
-            } else {
-                if (isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
-                    // --- Animation Start ---
-                    const startSquare = document.querySelector(`.square:nth-child(${selectedSquare.row * 8 + selectedSquare.col + 1})`);
-                    const endSquare = document.querySelector(`.square:nth-child(${row * 8 + col + 1})`);
-                    const movingPiece = startSquare.querySelector('.piece');
+          if (!selectedSquare) {
+            if (board[row][col] && board[row][col][0] === currentPlayer) {
+              selectedSquare = { row, col };
+            }
+          } else {
+            if (isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
 
-                    // If there's a piece at the destination, remove it *before* moving the new piece
-                    const capturedPiece = endSquare.querySelector('.piece');
-                    if (capturedPiece) {
-                        capturedPiece.remove();
-                        playCaptureSound();
+                  // --- Animation Start ---
+                  const startSquare = document.querySelector(`.square:nth-child(${selectedSquare.row * 8 + selectedSquare.col + 1})`);
+                  const endSquare = document.querySelector(`.square:nth-child(${row * 8 + col + 1})`);
+                  const movingPiece = startSquare.querySelector('.piece');
+
+                  // If there's a piece at the destination, remove it *before* moving the new piece
+                  const capturedPiece = endSquare.querySelector('.piece');
+                  if (capturedPiece) {
+                    capturedPiece.remove(); // Remove immediately (no fancy capture animation for now)
+                    playCaptureSound(); //sound
+                  }
+                  else{
+                    //play move sound
+                    playMoveSound();
+                  }
+
+
+                  // Calculate the offset for the transition
+                  const startRect = startSquare.getBoundingClientRect();
+                  const endRect = endSquare.getBoundingClientRect();
+                  const deltaX = endRect.left - startRect.left;
+                  const deltaY = endRect.top - startRect.top;
+
+                  // Apply the transform to move the piece *before* updating the board data
+                  movingPiece.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+                  // --- Animation End ---
+
+              // Update the board data *after* the animation has started (using a setTimeout)
+                setTimeout(() => {
+                    // Update board array
+                    board[row][col] = board[selectedSquare.row][selectedSquare.col];
+                    board[selectedSquare.row][selectedSquare.col] = '';
+                    selectedSquare = null;
+                   // Check for game over (very simplified)
+                    if (isKingCaptured()) {
+                      gameOver = true;
+                      playGameOverSound();
                     }
                     else{
-                        playMoveSound();
+                      switchPlayer();
                     }
+                    renderBoard(); // Re-render after the move
+                }, 300); // 300ms matches the CSS transition time
 
-                    const startRect = startSquare.getBoundingClientRect();
-                    const endRect = endSquare.getBoundingClientRect();
-                    const deltaX = endRect.left - startRect.left;
-                    const deltaY = endRect.top - startRect.top;
-
-                    movingPiece.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-
-                    // --- Animation End ---
-
-                    // Update the board data and send the move to the server
-                    setTimeout(() => {
-                        board[row][col] = board[selectedSquare.row][selectedSquare.col];
-                        board[selectedSquare.row][selectedSquare.col] = '';
-                        selectedSquare = null;
-
-                        // Send move to server
-                        const moveData = {
-                            gameId: gameId,
-                            startRow: selectedSquare.row,
-                            startCol: selectedSquare.col,
-                            endRow: row,
-                            endCol: col,
-                            playerColor: playerColor
-                        };
-                        ws.send(JSON.stringify({ type: 'move', data: moveData }));
-
-                        //  Check for game over (very simplified)
-                        if (isKingCaptured()) {
-                            gameOver = true;
-                            playGameOverSound();
-                            sendGameOver(); // Send game over message to server
-                        }
-                        else{
-                           switchPlayer();
-                        }
-                        renderBoard();
-                    }, 300);
-
-                } else if (board[row][col] && board[row][col][0] === playerColor) {
-                    selectedSquare = { row, col };
-                } else {
-                    selectedSquare = null;
-                }
+            } else if (board[row][col] && board[row][col][0] === currentPlayer) {
+                selectedSquare = { row, col };
+            } else {
+                selectedSquare = null;
             }
-            renderBoard();
+          }
+          renderBoard();
         }
 
-        function isKingCaptured() {
-            let whiteKingPresent = false;
-            let blackKingPresent = false;
-            for (let r = 0; r < 8; r++) {
-                for (let c = 0; c < 8; c++) {
-                    if (board[r][c] === 'wK') {
-                        whiteKingPresent = true;
-                    } else if (board[r][c] === 'bK') {
-                        blackKingPresent = true;
-                    }
+      function isKingCaptured() {
+          let whiteKingPresent = false;
+          let blackKingPresent = false;
+          for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (board[r][c] === 'wK') {
+                    whiteKingPresent = true;
+                } else if (board[r][c] === 'bK') {
+                    blackKingPresent = true;
                 }
             }
-            return !whiteKingPresent || !blackKingPresent;
-        }
+          }
+          return !whiteKingPresent || !blackKingPresent;
+      }
 
-        function isValidMove(startRow, startCol, endRow, endCol) {
+        // isValidMove and isPathClear functions remain the same (from the previous version)
+       function isValidMove(startRow, startCol, endRow, endCol) {
             const piece = board[startRow][startCol];
             const targetPiece = board[endRow][endCol];
 
+            // Basic checks:
+            // 1. Can't move to the same square.
             if (startRow === endRow && startCol === endCol) {
                 return false;
             }
-            if (targetPiece && targetPiece[0] === playerColor) {
+            // 2. Can't capture own piece.
+            if (targetPiece && targetPiece[0] === currentPlayer) {
                 return false;
             }
 
+            // Piece-specific movement logic:
             const rowDiff = Math.abs(endRow - startRow);
             const colDiff = Math.abs(endCol - startCol);
 
             switch (piece[1]) {
-                case 'P':
-                    const direction = playerColor === 'w' ? -1 : 1;
+                case 'P': // Pawn
+                    const direction = currentPlayer === 'w' ? -1 : 1;  // White moves up (-1), black moves down (+1)
+                    // Standard one-step move
                     if (endCol === startCol && board[endRow][endCol] === '') {
-                        if (endRow - startRow === direction) {
+                        if (endRow - startRow === direction) { // One step forward
                             return true;
                         }
-                        if ((startRow === 6 && playerColor === 'w') || (startRow === 1 && playerColor === 'b')) {
+                        // Two-step move from initial position
+                        if ((startRow === 6 && currentPlayer === 'w') || (startRow === 1 && currentPlayer === 'b')) {
                             if (endRow - startRow === 2 * direction && board[startRow + direction][startCol] === '') {
                                 return true;
                             }
                         }
                     }
+                    // Capture move (diagonal)
                     if (Math.abs(endCol - startCol) === 1 && endRow - startRow === direction) {
-                        if (board[endRow][endCol] !== '' && board[endRow][endCol][0] !== playerColor) {
+                        if (board[endRow][endCol] !== '' && board[endRow][endCol][0] !== currentPlayer) {
                             return true;
                         }
                     }
                     return false;
 
-                case 'R':
-                    if (rowDiff === 0 || colDiff === 0) {
-                        return isPathClear(startRow, startCol, endRow, endCol);
+                case 'R': // Rook
+                    if (rowDiff === 0 || colDiff === 0) { // Move along row or column
+                      return isPathClear(startRow, startCol, endRow, endCol);
                     }
                     return false;
 
-                case 'N':
+
+                case 'N': // Knight
+                      // L-shaped move: 2 steps in one direction (row or col), 1 step in the other
                     if ((rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2)) {
-                        return true;
+                         return true; // Knight can jump over pieces.
                     }
                     return false;
 
-                case 'B':
-                    if (rowDiff === colDiff) {
-                        return isPathClear(startRow, startCol, endRow, endCol);
-                    }
-                    return false;
 
-                case 'Q':
+                case 'B': // Bishop
+                   if (rowDiff === colDiff) {
+                     return isPathClear(startRow, startCol, endRow, endCol);
+                   }
+                  return false;
+
+                case 'Q': // Queen
                     if (rowDiff === 0 || colDiff === 0 || rowDiff === colDiff) {
-                        return isPathClear(startRow, startCol, endRow, endCol);
+                      return isPathClear(startRow, startCol, endRow, endCol);
                     }
-                    return false;
+                  return false;
 
-                case 'K':
-                    if (rowDiff <= 1 && colDiff <= 1) {
-                        return true;
-                    }
-                    return false;
+                case 'K': // King
+                  if (rowDiff <= 1 && colDiff <= 1) {
+                    return true;
+                  }
+                  return false;
 
                 default:
                     return false;
             }
         }
 
-        function isPathClear(startRow, startCol, endRow, endCol) {
-            const rowStep = startRow === endRow ? 0 : (endRow > startRow ? 1 : -1);
-            const colStep = startCol === endCol ? 0 : (endCol > startCol ? 1 : -1);
+      function isPathClear(startRow, startCol, endRow, endCol) {
+          const rowStep = startRow === endRow ? 0 : (endRow > startRow ? 1 : -1);
+          const colStep = startCol === endCol ? 0 : (endCol > startCol ? 1 : -1);
 
-            let currentRow = startRow + rowStep;
-            let currentCol = startCol + colStep;
+          let currentRow = startRow + rowStep;
+          let currentCol = startCol + colStep;
 
-            while (currentRow !== endRow || currentCol !== endCol) {
-                if (board[currentRow][currentCol] !== '') {
-                    return false;
-                }
-                currentRow += rowStep;
-                currentCol += colStep;
-            }
-            return true;
+          while (currentRow !== endRow || currentCol !== endCol) {
+              if (board[currentRow][currentCol] !== '') {
+                  return false; // Path is blocked
+              }
+              currentRow += rowStep;
+              currentCol += colStep;
+          }
+          return true; // Path is clear
         }
 
-        function switchPlayer() {
-            currentPlayer = currentPlayer === 'w' ? 'b' : 'w';
-        }
+      function switchPlayer() {
+        currentPlayer = currentPlayer === 'w' ? 'b' : 'w';
+      }
 
-        function updateGameStatus() {
+      function updateGameStatus() {
             const statusElement = document.getElementById('game-status');
-            let statusText = '';
-            if (gameOver) {
-                const winningPlayer = currentPlayer === 'w' ? 'Black' : 'White';
-                statusText = `<span class="winning-message">${winningPlayer} wins!</span>`;
-            } else if (opponentDisconnected) {
-                statusText = `<span class="draw-message">Opponent disconnected. Game Over.</span>`;
+             let statusText = '';
+            if (gameOver)
+            {
+              const winningPlayer = currentPlayer === 'w' ? 'Black' : 'White';
+              statusText = `<span class="winning-message">${winningPlayer} wins!</span>`;
             }
-             else {
-                statusText = `Current Player: ${currentPlayer === 'w' ? 'White' : 'Black'}`;
+            else {
+              statusText = `Current Player: ${currentPlayer === 'w' ? 'White' : 'Black'}`;
             }
             statusElement.innerHTML = statusText;
-        }
-
-        function playMoveSound() {
-            if (!isMuted) {
-                moveSynth.triggerAttackRelease("C4", "8n");
-            }
-        }
-
-        function playCaptureSound() {
-            if (!isMuted) {
-                captureSynth.triggerAttackRelease("A2", "8n");
-            }
-        }
-
-       function playGameOverSound() {
-            if (!isMuted) {
-                const now = Tone.now();
-                gameOverSynth.triggerAttackRelease("C2", "8n", now);
-                gameOverSynth.triggerAttackRelease("E2", "8n", now + 0.2);
-                gameOverSynth.triggerAttackRelease("G2", "8n", now + 0.4);
-                gameOverSynth.triggerAttackRelease("C3", "1n", now + 0.6);
-            }
-        }
-
-        function connectToServer() {
-            // Use a relative URL for the WebSocket connection
-            const wsUrl = `ws://${window.location.host}/ws`;
-            ws = new WebSocket(wsUrl);
-
-            ws.onopen = () => {
-                console.log('Connected to server');
-                connectionMessage.textContent = 'Connected! Waiting for opponent...';
-                // No need to send 'join' here, server sends 'gameStart'
-            };
-
-            ws.onmessage = (message) => {
-                const data = JSON.parse(message.data);
-                console.log('Received message:', data);
-
-                switch (data.type) {
-                    case 'gameStart':
-                        gameId = data.gameId;
-                        playerColor = data.playerColor;
-                        initializeBoard();
-                        renderBoard();
-                        connectionOverlay.style.display = 'none';
-                        resetButton.disabled = false; // Enable reset button
-                        if (playerColor === 'w') {
-                            connectionMessage.textContent = `Game started! You are White. Your move.`;
-                            currentPlayer = 'w';
-                        }
-                        else{
-                             connectionMessage.textContent = `Game started! You are Black. Waiting for opponent's move.`;
-                             currentPlayer = 'b';
-                        }
-                        break;
-                    case 'move':
-                        if (data.data.playerColor !== playerColor) {
-                            // Update board based on opponent's move
-                            board[data.data.endRow][data.data.endCol] = board[data.data.startRow][data.data.startCol];
-                            board[data.data.startRow][data.data.startCol] = '';
-                            switchPlayer();
-                            renderBoard();
-                        }
-                        break;
-                    case 'gameOver':
-                        gameOver = true;
-                        renderBoard(); // Ensure the final state is displayed
-                        if (data.winningPlayer === playerColor)
-                        {
-                             gameOverText.textContent = "You Win!";
-                        }
-                        else{
-                             gameOverText.textContent = "You Lose!";
-                        }
-
-                        gameOverOverlay.style.display = 'flex';
-                        playGameOverSound();
-                        break;
-                    case 'opponentDisconnected':
-                        opponentDisconnected = true;
-                        gameOver = true;
-                        renderBoard();
-                        gameOverText.textContent = "Opponent Disconnected!";
-                        gameOverOverlay.style.display = 'flex';
-                        break;
-                    case 'error':
-                        console.error('Server error:', data.message);
-                        connectionMessage.textContent = `Error: ${data.message}`;
-                        break;
-                }
-            };
-
-            ws.onclose = () => {
-                console.log('Disconnected from server');
-                connectionMessage.textContent = 'Disconnected. Please refresh to reconnect.';
-                resetButton.disabled = true; // Disable reset button
-            };
-
-            ws.onerror = (error) => {
-                console.error('Connection error:', error);
-                connectionMessage.textContent = 'Connection error. Please refresh.';
-                resetButton.disabled = true; // Disable reset button
-            };
-        }
-
-        function sendMove(moveData) {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'move', data: moveData }));
-            } else {
-                console.error('WebSocket is not connected');
-            }
-        }
-
-        function sendGameOver() {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'gameOver', gameId: gameId, winningPlayer: playerColor }));
-            } else {
-                console.error('WebSocket is not connected');
-            }
-        }
+      }
 
         // Event listener for the reset button
-        resetButton.addEventListener('click', () => {
-            // Send a message to the server to request a new game
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'newGame' }));
-                connectionOverlay.style.display = 'flex';
-                connectionMessage.textContent = 'Waiting for new game...';
-                resetButton.disabled = true;
-            } else {
-                console.error('WebSocket is not connected');
-            }
+        document.getElementById('reset-button').addEventListener('click', () => {
+            initializeBoard();
+            renderBoard();
         });
 
-        // Event listener for the new game button on the game over overlay
-        newGameButton.addEventListener('click', () => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'newGame' }));
-                connectionOverlay.style.display = 'flex';
-                connectionMessage.textContent = 'Waiting for new game...';
-                gameOverOverlay.style.display = 'none';
-                resetButton.disabled = true;
-            } else {
-                console.error('WebSocket is not connected');
-            }
-        });
+      // Event listener for the mute button
+      document.getElementById('mute-button').addEventListener('click', () => {
+          isMuted = !isMuted; // Toggle mute state
+          Tone.Master.mute = isMuted; // Mute/unmute Tone.js
 
-        // Event listener for the mute button
-        document.getElementById('mute-button').addEventListener('click', () => {
-            isMuted = !isMuted;
-            Tone.Master.mute = isMuted;
-            const muteIcon = document.getElementById('mute-icon');
-            const muteText = document.getElementById('mute-text');
-            if (isMuted) {
-                muteIcon.src = "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-x.svg";
-                muteText.textContent = "Unmute";
-            } else {
-                muteIcon.src = "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-2.svg";
-                muteText.textContent = "Mute";
-            }
-        });
+          // Update button appearance
+          const muteIcon = document.getElementById('mute-icon');
+          const muteText = document.getElementById('mute-text');
+          if (isMuted) {
+              muteIcon.src = "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-x.svg";
+              muteText.textContent = "Unmute";
+          } else {
+              muteIcon.src = "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-2.svg";
+              muteText.textContent = "Mute";
+          }
+      });
 
-        // Initialize WebSocket connection on page load
-        connectToServer();
+        // Initialize and render
+        initializeBoard();
+        renderBoard();
     </script>
 </body>
 </html>
